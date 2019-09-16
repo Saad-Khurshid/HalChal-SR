@@ -14,7 +14,15 @@ import AsyncStorage from '@react-native-community/async-storage';
 //import { apiEndpoints } from './../api/apiEndpoints';
 
 const HomeScreen = ({ navigation }) => {
-  const cnic = navigation.getParam('cnic', 'NO CNIC in HOME');
+  //const cnic = navigation.getParam('cnic', 'NO CNIC in HOME');
+  ///////////////////////////////////hooks///////////////////////////////////////////////
+  const [cnic, setCnic] = useState(navigation.getParam('cnic', 'NO CNIC in HOME'));
+  useEffect(() => {
+      getUserCnicFromStorage();
+  }, []);
+
+
+
 
   ///////////////////////////////////methods///////////////////////////////////////////
   var bookRide = () => {

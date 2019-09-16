@@ -20,6 +20,10 @@ const ChooseServiceTime = ({ navigation }) => {
         console.log('now');
         navigation.navigate('ScheduleNow',{cnic, pickupCoordinates, machinery, machineryUri});
     }
+    var bookLater = () => {
+        console.log('now');
+        navigation.navigate('ScheduleLater',{cnic, pickupCoordinates, machinery, machineryUri});
+    }
     //////////////////////////render////////////////////////////
     return (
         <View style={styles.sectionContainer}>
@@ -47,6 +51,7 @@ const ChooseServiceTime = ({ navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity
                 style={styles.btnContainer}
+                onPress={bookLater}
             >
                 <Text style={styles.btnText}>Schedule Some Other Time</Text>
 

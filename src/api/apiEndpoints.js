@@ -16,4 +16,16 @@ export const apiEndpoints = {
     url:
       'http://3.14.183.237/agritech/findCaptain.php',
   },
+  fetchScheduledServices: {
+    url:
+      'http://3.14.183.237/agritech/farmerScheduledServices.php',
+  },
+  fetchServicesRecieved: {
+    url:
+      'http://3.14.183.237/agritech/farmerServicesRecieved.php',
+  },
+  deleteFarmerReservationRequestByRID: {
+    url:
+      'http://3.14.183.237/agritech/deleteFarmerReservationRequestByRID.php',
+  },
 };

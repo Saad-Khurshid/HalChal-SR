@@ -19,7 +19,7 @@ import { apiEndpoints } from './../api/apiEndpoints';
 
 const FindingCaptain = ({ navigation }) => {
     var cnic = navigation.getParam('cnic');
-    var pickupCoordinates = navigation.getParam('pickupCoordinates');
+    var pickupCoordinates = {latitude: 33.99792058817586, longitude: 71.48998338729143};
     var machineryUri = navigation.getParam('machineryUri');
     var machinery = navigation.getParam('machinery');
     var area = navigation.getParam('area');
@@ -33,12 +33,14 @@ const FindingCaptain = ({ navigation }) => {
     console.log(dateTime);
     ///////////////////////hooks///////////////////////////////
     const [text, setText] = useState('Finding you a nearby captain...');
+    const [msgText, setMsgText] = useState('Finding you a nearby captain...');
     const [dist, setDist] = useState('');
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
     const [ownerLocation, setOwnerLocation] = useState(pickupCoordinates);
     const [rid, setRid] = useState('');
-
+    
+    console.log('owner looocccccccccccccccccccccc    =>    ', ownerLocation);
     useEffect(() => {
         findCaptain();
     }, []);
@@ -51,19 +53,24 @@ const FindingCaptain = ({ navigation }) => {
         const constructedUrl = `${baseUrl}?cnic=${cnic}&lat=${pickupCoordinates.latitude}&lng=${pickupCoordinates.longitude}&startDate=${dateTime}&endDate=${endDateTime}&machineType=${machinery}&area=${area}`;
         console.log(constructedUrl);
         return NetInfo.fetch().then(NetInfoState => {
-            console.log('Connection type', NetInfoState);
-            console.log('Is connected?', NetInfoState.isConnected);
             if (NetInfoState.isConnected === false) {
                 alertUser('Error', 'Please check your internet connectivity.');
             }
             else {
-                console.log('Connected to internet');
                 return fetch(constructedUrl)
                     .then(response => response.json())
                     .then(data => {
-                        console.log({ data });
                         if (data.success === 0) {
-                            alertUser('Error', data.message);
+                            setText('No RTC Available');
+                            setMsgText( data.message);
+                            Alert.alert('Failed to book your ride!',  data.message, [
+                                {
+                                    text: 'OK',
+                                    onPress: () => {
+                                        navigation.popToTop();
+                                    }
+                                }
+                            ])
                         }
                         else {
                             setText('Captain Found')
@@ -75,16 +82,17 @@ const FindingCaptain = ({ navigation }) => {
                             const rid = data.rid;
                             setName(name);
                             setDist(dist);
-                            setOwnerLocation({ latitude: parseFloat(lat), longitude: parseFloat(lng) });
+                            setOwnerLocation(  { latitude: parseFloat(data.owner.lat), longitude: parseFloat(data.owner.lng)});
                             console.log('ownerr locccc', ownerLocation);
                             setRid(rid);
                             setPhone("Call Captain: " + phoneNumber);
                             let msg = 'Your captain ' + name + ' is on his way.\n';
+                            setMsgText( msg)
                             Alert.alert('Captain Found', msg, [
                                 {
                                     text: 'OK',
                                     // onPress: () => {
-                                    //     // navigation.navigate('PhoneNumberVerification',{phoneNumber:phoneNumber, cnic:cnic});
+                                    //     navigation.navigate('PhoneNumberVerification',{phoneNumber:phoneNumber, cnic:cnic});
                                     // }
                                 }
                             ])
@@ -132,13 +140,27 @@ const FindingCaptain = ({ navigation }) => {
                         longitudeDelta: 0.1,
                     }}
                 >
+                    {name !== '' ?
+                        <Marker
+                            key={91}
+                            coordinate={{ latitude: +ownerLocation.latitude, longitude: +ownerLocation.longitude }}
+                            coordinate={ownerLocation}
+                            title={`Owner`}
+                            description={`Active location`}
+                        >
+                            <Text style={styles.markerText}> Captain {name} </Text>
+                            <Image source={{ uri: 'https://aicontents.s3.amazonaws.com/ServiceProviderAppData/machinesImages/machineryMarker.png' }} style={styles.ownerMarker} />
+                        </Marker>
+                        : null
+                    }
                     <Marker
                         key={90}
-                        coordinate={{ latitude: +ownerLocation.latitude, longitude: +ownerLocation.longitude }}
-                        coordinate={ownerLocation}
-                        title={`Owner`}
+                        coordinate={{ latitude: +pickupCoordinates.latitude, longitude: +pickupCoordinates.longitude }}
+                        coordinate={pickupCoordinates}
+                        title={`My Location`}
                         description={`Active location`}
                     >
+                        <Text style={styles.markerText}> My Location  </Text>
                         <Image source={{ uri: 'https://aicontents.s3.amazonaws.com/ServiceProviderAppData/machinesImages/ownerLocationPin.png' }} style={styles.marker} />
                     </Marker>
                 </MapView>
@@ -150,7 +172,7 @@ const FindingCaptain = ({ navigation }) => {
                 {name !== '' ?
                     <View>
                         <Text style={styles.text}>
-                            Captain: {name}
+                            {msgText}
                         </Text>
                         <Button
                             title={phone}
@@ -163,7 +185,7 @@ const FindingCaptain = ({ navigation }) => {
                             iconRight
                             onPress={() => Linking.openURL(`tel:${phone.replace(/\D/g, '')}`)}
                         />
-                    </View> : <Text>'No RTC available'</Text>
+                    </View> : <Text style={styles.text}> {msgText} </Text>
 
                 }
 
@@ -234,6 +256,16 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width * 0.05,
         height: Dimensions.get('window').height * 0.03
     },
+    ownerMarker: {
+        width: Dimensions.get('window').width * 0.1,
+        height: Dimensions.get('window').height * 0.06
+    },
+    markerText:{
+        textAlign: 'center',
+        color: '#4184d0',
+        fontSize: 10,
+        fontWeight: 'bold',
+    }
 });
 
 

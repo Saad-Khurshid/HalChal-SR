@@ -13,6 +13,10 @@ import selectMachinery from './src/screens/selectMachinery';
 import ChooseServiceTime from './src/screens/ChooseServiceTime';
 import ScheduleNow from './src/screens/ScheduleNow';
 import FindingCaptain from './src/screens/FindingCaptain';
+import ScheduleLater from './src/screens/ScheduleLater';
+import ScheduledServices from './src/screens/ScheduledServices';
+import ServicesRecieved from './src/screens/ServicesRecieved';
+import modalTest from './src/screens/modalTest';
 
 
 console.disableYellowBox = true;
@@ -28,10 +32,14 @@ const AppNavigator = createStackNavigator(
     ChooseServiceTime: ChooseServiceTime,
     ScheduleNow: ScheduleNow,
     FindingCaptain: FindingCaptain,
+    ScheduleLater: ScheduleLater,
+    ScheduledServices: ScheduledServices,
+    ServicesRecieved: ServicesRecieved,
+    modalTest: modalTest,
   },
   {
 
-    initialRouteName: 'FirstScreen',
+    initialRouteName: 'ServicesRecieved',
     headerMode: 'none',
     navigationOptions: {
       headerVisible: false,

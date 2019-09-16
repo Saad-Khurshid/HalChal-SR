@@ -22,8 +22,8 @@ const pickUpLocation = ({ navigation }) => {
     const [myLng, setLng] = useState(0);
     const [latitudeDelta, setLatitudeDelta] = useState(0.1);
     const [longitudeDelta, setLongitudeDelta] = useState(0.1);
-    const [pickUpLat, setPickupLat] = useState(0.1);
-    const [pickUpLng, setPickupLng] = useState(0.1);
+    const [pickUpLat, setPickupLat] = useState(0.5);
+    const [pickUpLng, setPickupLng] = useState(0.5);
     useEffect(() => {
         findCoordinates();
     }, []);
